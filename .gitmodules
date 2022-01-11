@@ -1,0 +1,3 @@
+[submodule "modules/DDStream-common"]
+	path = modules/DDStream-common
+	url = git@github.com:yrc123/DDStream-common.git

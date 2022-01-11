@@ -1,0 +1,37 @@
+#服务器端口
+server:
+  port: 7000
+
+spring:
+  application:
+    name: ${DDSTREAM_CLIENT_APPLICATION_NAME:DDStream-client}
+  #注册中心
+  cloud:
+    consul:
+      port: 8500
+      #      host: 106.15.74.153
+#      host: localhost
+      discovery:
+          auto-ip-address: true
+  #h2数据库
+  datasource:
+    driver-class-name: org.h2.Driver
+    username: ${DDSTREAM_CLIENT_DATABASE_USERNAME:sa}
+    url: jdbc:h2:./database/test
+  h2:
+    console:
+      enabled: true
+      path: /h2
+  sql:
+    init:
+      #mode: always
+      #data-locations:
+#健康检查指标
+management:
+  endpoints:
+    web:
+      exposure:
+        include: metrics,health
+    endpoint:
+      health:
+        show-details: always
