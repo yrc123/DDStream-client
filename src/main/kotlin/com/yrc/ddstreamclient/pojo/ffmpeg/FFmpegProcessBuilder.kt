@@ -12,6 +12,7 @@ class FFmpegProcessBuilder(private val config: FFmpegConfigDto){
             add(ffmpeg)
             addAll(config.toList())
         }
+        //TODO("后续要将日志打印到文件，然后提供接口读取")
         return ProcessBuilder(config).inheritIO().start()
     }
 }
