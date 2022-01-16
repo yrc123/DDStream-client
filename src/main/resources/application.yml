@@ -1,6 +1,12 @@
 #服务器端口
 server:
   port: 7000
+  #ssl
+  ssl:
+    enabled: true
+    key-store: classpath:mykey.keystore
+    key-store-type: JKS
+    key-store-password: 123456
 
 spring:
   application:
@@ -13,6 +19,12 @@ spring:
 #      host: localhost
       discovery:
           auto-ip-address: true
+  web:
+    resources:
+      static-locations: file:./hls
+  mvc:
+    static-path-pattern: /hls/**
+
   #h2数据库
   datasource:
     driver-class-name: org.h2.Driver

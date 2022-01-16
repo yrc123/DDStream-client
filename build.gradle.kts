@@ -27,6 +27,8 @@ dependencies {
 //    implementation("org.flywaydb:flyway:8.4.0")
     implementation("com.baomidou:mybatis-plus-boot-starter:3.5.0")
     implementation("org.springframework.boot:spring-boot-starter-actuator")
+    //校验
+    implementation("org.valiktor:valiktor-core:0.12.0")
 //    implementation("com.yrc:DDStream-common")
     implementation(project("modules:DDStream-common"))
     runtimeOnly("com.h2database:h2")

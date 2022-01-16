@@ -177,3 +177,8 @@ hs_err_pid*
 
 #h2
 *.db
+
+*.mp4
+*.m3u8
+*.ts
+*.keystore
