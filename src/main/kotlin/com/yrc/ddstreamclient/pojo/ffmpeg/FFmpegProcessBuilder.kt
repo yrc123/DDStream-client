@@ -7,7 +7,7 @@ class FFmpegProcessBuilder(private val config: FFmpegConfigDto){
     companion object {
         val ffmpeg = Loader.load(org.bytedeco.ffmpeg.ffmpeg::class.java)
     }
-    fun start(): Process {
+    fun start(): Process? {
         val config = ArrayList<String>().apply {
             add(ffmpeg)
             addAll(config.toList())

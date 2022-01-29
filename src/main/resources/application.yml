@@ -18,7 +18,8 @@ spring:
       #      host: 106.15.74.153
 #      host: localhost
       discovery:
-          auto-ip-address: true
+        auto-ip-address: true
+        fail-fast: false
   web:
     resources:
       static-locations: file:./hls
@@ -36,8 +37,8 @@ spring:
       path: /h2
   sql:
     init:
-      #mode: always
-      #data-locations:
+      mode: always
+      data-locations: classpath:sql/init.sql
 #健康检查指标
 management:
   endpoints:

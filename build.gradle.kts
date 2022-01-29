@@ -31,6 +31,15 @@ dependencies {
     implementation("org.valiktor:valiktor-core:0.12.0")
 //    implementation("com.yrc:DDStream-common")
     implementation(project("modules:DDStream-common"))
+    //jwt
+    implementation("io.jsonwebtoken:jjwt-api:0.11.2")
+    implementation("com.fasterxml:jackson-xml-databind:0.6.2")
+    runtimeOnly("io.jsonwebtoken:jjwt-impl:0.11.2")
+    runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.11.2")
+    //hash
+    implementation("commons-codec:commons-codec:1.15")
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
+    //h2驱动
     runtimeOnly("com.h2database:h2")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
 }

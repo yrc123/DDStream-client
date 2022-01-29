@@ -1,34 +1,47 @@
 package com.yrc.ddstreamclient.controller
 
+import com.baomidou.mybatisplus.core.metadata.IPage
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page
 import com.yrc.common.pojo.ffmpeg.FFmpegConfigDto
-import com.yrc.ddstreamclient.pojo.ffmpeg.FFmpegProcessBuilder
+import com.yrc.ddstreamclient.pojo.ffmpeg.FFmpegProcessDto
+import com.yrc.ddstreamclient.service.ffmpeg.FFmpegService
 import org.bytedeco.javacpp.Loader
-import org.springframework.context.annotation.Bean
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
+import javax.annotation.Resource
 
 @RestController
 @RequestMapping("/api/client")
 class FFmpegController {
-    val processMap = HashMap<String, Process>()
+    @Resource
+    lateinit var ffmpegService: FFmpegService
 
-    @Bean
-    fun processMap() = processMap
-
-    @GetMapping("/start")
-    fun startPush(): FFmpegConfigDto{
-        val defaultConfig = FFmpegConfigDto.getDefaultConfig("https://cctvalih5ca.v.myalicdn.com/live/cctv1_2/index.m3u8", "hls/test.m3u8")
-        processMap["test"] = FFmpegProcessBuilder(defaultConfig).start()
-        return defaultConfig;
+    @PostMapping("/ffmpeg/{name}:start")
+    fun startPush(@PathVariable("name") name: String, @RequestBody configDto: FFmpegConfigDto): FFmpegProcessDto {
+        return ffmpegService.startFFmpeg(name, configDto)
     }
-    @GetMapping("/stop")
-    fun stopPush(): String{
-        processMap["test"]?.let {
-            it.destroy()
-            return it.isAlive.toString()
+
+    @GetMapping("/ffmpeg/{id}:stop")
+    fun stopPush(@PathVariable("id") id: String){
+        ffmpegService.stopFFmpegs(listOf(id))
+    }
+
+    @DeleteMapping("/ffmpeg/{id}")
+    fun deleteProcess(@PathVariable("id") id: String) {
+        val process = ffmpegService.getFFmpegByIds(listOf(id)).first()
+        if (process.alive) {
+            TODO("拒绝")
         }
-        return "Not Found Process"
+        ffmpegService.deleteFFmpegProcessByIds(listOf(id))
+    }
+
+    @PostMapping("/ffmpeg")
+    fun listProcesses(@RequestBody page: Page<FFmpegProcessDto>): IPage<FFmpegProcessDto> {
+        return ffmpegService.getFFmpegProcessList(page)
+    }
+
+    @GetMapping("/test")
+    fun test(): FFmpegConfigDto {
+        return FFmpegConfigDto.getDefaultConfig("https://cctvalih5ca.v.myalicdn.com/live/cctv1_2/index.m3u8", "hls/test.m3u8");
     }
     @GetMapping("/show")
     fun show(): String{
