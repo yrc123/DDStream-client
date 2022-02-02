@@ -2,7 +2,7 @@ package com.yrc.ddstreamclient.config
 
 import com.ecwid.consul.v1.ConsulClient
 import com.yrc.common.exception.IpNotGetException
-import com.yrc.common.utils.IpUtil
+import com.yrc.common.utils.IpUtils
 import org.apache.commons.logging.LogFactory
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.cloud.consul.discovery.ConsulDiscoveryClient
@@ -28,7 +28,7 @@ class ConsulConfig {
         discoveryProperties: ConsulDiscoveryProperties?
     ): ConsulDiscoveryClient? {
         try {
-            val publicIpAddress = IpUtil.getPublicIpAddress()
+            val publicIpAddress = IpUtils.getPublicIpAddress()
             discoveryProperties?.let {
                 it.isPreferIpAddress = true
                 it.ipAddress = publicIpAddress

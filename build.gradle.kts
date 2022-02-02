@@ -41,7 +41,10 @@ dependencies {
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     //h2驱动
     runtimeOnly("com.h2database:h2")
+
+    implementation("commons-io:commons-io:2.11.0")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
+
 }
 
 dependencyManagement {

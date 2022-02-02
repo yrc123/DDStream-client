@@ -48,3 +48,6 @@ management:
     endpoint:
       health:
         show-details: always
+#自定义
+dd-stream:
+  jwt-public-key: ${DDSTREAM_PUBLIC_KEY:MIGbMBAGByqGSM49AgEGBSuBBAAjA4GGAAQButo0oZ2tDur8xnGn3mub5r9QmmSYf6LcyZv31DhSC1uchrfNi9ETiU39T3V1wtEPALtYEVeO7JbXuIw+Su9dIcQB6ujWodEDjwm2MpO0duFHWJR8tZMlZV8YF/LYyvjKBu0wefqzk2v68ir/mJ5hKNiDzCISDD1GvghLx1DZXT2RKCo=}

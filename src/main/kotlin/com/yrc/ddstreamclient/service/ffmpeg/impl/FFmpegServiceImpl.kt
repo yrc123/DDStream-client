@@ -25,9 +25,12 @@ class FFmpegServiceImpl : FFmpegService{
     override fun startFFmpeg(processName: String, ffmpegConfigDto: FFmpegConfigDto): FFmpegProcessDto {
         val ffmpegProcessEntity = FFmpegProcessEntity(processName, ffmpegConfigDto)
         ffmpegProcessMapper.insert(ffmpegProcessEntity)
+        if (processMap.containsKey(ffmpegProcessEntity.id)) {
+            throw Exception("重复的id")
+        }
         val process = FFmpegProcessBuilder(ffmpegConfigDto).start()
         if (process != null) {
-            processMap.plus(processName to process)
+            processMap.put(ffmpegProcessEntity.id ?: throw Exception("process运行失败"), process)
         }
         return FFmpegProcessDto(ffmpegProcessEntity, getAliveStatus(process), process)
     }
