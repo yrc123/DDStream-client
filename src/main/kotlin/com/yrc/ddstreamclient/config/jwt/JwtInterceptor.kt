@@ -1,4 +1,4 @@
-package com.yrc.ddstreamclient.config
+package com.yrc.ddstreamclient.config.jwt
 
 import com.yrc.common.service.jwt.JwtService
 import org.apache.commons.io.IOUtils

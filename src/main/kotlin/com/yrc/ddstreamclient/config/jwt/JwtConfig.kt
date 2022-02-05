@@ -1,4 +1,4 @@
-package com.yrc.ddstreamclient.config
+package com.yrc.ddstreamclient.config.jwt
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.yrc.common.service.jwt.JwtKeyProvider
