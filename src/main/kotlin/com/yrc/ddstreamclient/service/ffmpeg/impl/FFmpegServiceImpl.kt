@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.kotlin.KtQueryWrapper
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page
 import com.baomidou.mybatisplus.extension.plugins.pagination.PageDTO
 import com.yrc.common.pojo.ffmpeg.FFmpegConfigDto
+import com.yrc.common.pojo.ffmpeg.FFmpegConfigItem
 import com.yrc.ddstreamclient.dao.ffmpeg.FFmpegProcessMapper
 import com.yrc.ddstreamclient.pojo.ffmpeg.FFmpegProcessBuilder
 import com.yrc.ddstreamclient.pojo.ffmpeg.FFmpegProcessDto
@@ -23,12 +24,22 @@ class FFmpegServiceImpl : FFmpegService{
     private lateinit var ffmpegProcessMapper: FFmpegProcessMapper
 
     override fun startFFmpeg(processName: String, ffmpegConfigDto: FFmpegConfigDto): FFmpegProcessDto {
-        val ffmpegProcessEntity = FFmpegProcessEntity(processName, ffmpegConfigDto)
+        return startFFmpeg(processName, ffmpegConfigDto)
+    }
+
+    override fun startFFmpeg(processName: String, ffmpegConfigList: List<String>): FFmpegProcessDto {
+        return startFFmpeg(processName) {
+            ffmpegConfigList
+        }
+    }
+
+    private fun startFFmpeg(processName: String, ffmpegConfigItem: FFmpegConfigItem): FFmpegProcessDto{
+        val ffmpegProcessEntity = FFmpegProcessEntity(processName, ffmpegConfigItem)
         ffmpegProcessMapper.insert(ffmpegProcessEntity)
         if (processMap.containsKey(ffmpegProcessEntity.id)) {
             throw Exception("重复的id")
         }
-        val process = FFmpegProcessBuilder(ffmpegConfigDto).start()
+        val process = FFmpegProcessBuilder(ffmpegConfigItem).start()
         if (process != null) {
             processMap.put(ffmpegProcessEntity.id ?: throw Exception("process运行失败"), process)
         }

@@ -23,6 +23,12 @@ class FFmpegController {
             .successResponse(ffmpegService.startFFmpeg(name, configDto))
     }
 
+    @PostMapping("/ffmpeg/name/{name}:start-with-list")
+    fun startPushWithList(@PathVariable("name") name: String, @RequestBody configList: List<String>): ResponseDto<FFmpegProcessDto> {
+        return ResponseUtils
+            .successResponse(ffmpegService.startFFmpeg(name, configList))
+    }
+
     @GetMapping("/ffmpeg/{id}:stop")
     fun stopPush(@PathVariable("id") id: String): ResponseDto<String>{
         ffmpegService.stopFFmpegs(listOf(id))
@@ -56,13 +62,5 @@ class FFmpegController {
         return ResponseUtils
             .successResponse(ffmpegService.getFFmpegByNames(listOf(name)))
 
-    }
-    @GetMapping("/test")
-    fun test(): FFmpegConfigDto {
-        return FFmpegConfigDto.getDefaultConfig("https://cctvalih5ca.v.myalicdn.com/live/cctv1_2/index.m3u8", "hls/test.m3u8");
-    }
-    @GetMapping("/show")
-    fun show(): String{
-        return "test"
     }
 }

@@ -8,6 +8,7 @@ import com.yrc.ddstreamclient.pojo.ffmpeg.FFmpegProcessDto
 interface FFmpegService {
 
     fun startFFmpeg(processName: String, ffmpegConfigDto: FFmpegConfigDto): FFmpegProcessDto
+    fun startFFmpeg(processName: String, ffmpegConfigList: List<String>): FFmpegProcessDto
     fun stopFFmpegs(ids: List<String>)
     fun getFFmpegByIds(ids: List<String>): List<FFmpegProcessDto>
     fun getFFmpegByNames(names: List<String>): List<FFmpegProcessDto>
