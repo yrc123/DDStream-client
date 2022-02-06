@@ -1,12 +1,10 @@
 #服务器端口
 server:
   port: 7000
-  #ssl
-  ssl:
-    enabled: true
-#    key-store: classpath:key.keystore
-#    key-store-type: PKCS12
-#    key-store-password: 123456
+ssl:
+  client-auth: true
+  keystore-path: identity.jks
+  keystore-password: secret
 
 spring:
   application:

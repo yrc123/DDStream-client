@@ -19,14 +19,16 @@ extra["springCloudVersion"] = "2021.0.0"
 
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web") {
-        exclude("org.springframework.boot", "spring-boot-starter-tomcat")
+        exclude("org.springframework.boot:spring-boot-starter-tomcat")
+        exclude("org.apache.tomcat.embed")
     }
     implementation("org.springframework.boot:spring-boot-starter-jetty")
+    implementation("io.github.hakky54:sslcontext-kickstart-for-jetty:7.2.1")
+//    implementation("io.github.hakky54:sslcontext-kickstart:7.2.1")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
 	implementation("org.bytedeco:ffmpeg-platform:4.4-1.5.6")
-    implementation("io.github.hakky54:sslcontext-kickstart:7.2.1")
     implementation("org.springframework.cloud:spring-cloud-starter-consul-discovery")
 //    implementation("org.flywaydb:flyway:8.4.0")
     implementation("com.baomidou:mybatis-plus-boot-starter:3.5.0")
