@@ -6,10 +6,11 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page
 import com.baomidou.mybatisplus.extension.plugins.pagination.PageDTO
 import com.yrc.common.pojo.ffmpeg.FFmpegConfigDto
 import com.yrc.common.pojo.ffmpeg.FFmpegConfigItem
+import com.yrc.common.pojo.ffmpeg.FFmpegProcessDto
 import com.yrc.ddstreamclient.dao.ffmpeg.FFmpegProcessMapper
 import com.yrc.ddstreamclient.pojo.ffmpeg.FFmpegProcessBuilder
-import com.yrc.ddstreamclient.pojo.ffmpeg.FFmpegProcessDto
 import com.yrc.ddstreamclient.pojo.ffmpeg.FFmpegProcessEntity
+import com.yrc.ddstreamclient.pojo.ffmpeg.createFromEntity
 import com.yrc.ddstreamclient.service.ffmpeg.FFmpegService
 import org.springframework.stereotype.Service
 import java.util.concurrent.ConcurrentHashMap
@@ -33,7 +34,7 @@ class FFmpegServiceImpl : FFmpegService{
         }
     }
 
-    private fun startFFmpeg(processName: String, ffmpegConfigItem: FFmpegConfigItem): FFmpegProcessDto{
+    private fun startFFmpeg(processName: String, ffmpegConfigItem: FFmpegConfigItem): FFmpegProcessDto {
         val ffmpegProcessEntity = FFmpegProcessEntity(processName, ffmpegConfigItem)
         ffmpegProcessMapper.insert(ffmpegProcessEntity)
         if (processMap.containsKey(ffmpegProcessEntity.id)) {
@@ -43,7 +44,7 @@ class FFmpegServiceImpl : FFmpegService{
         if (process != null) {
             processMap.put(ffmpegProcessEntity.id ?: throw Exception("process运行失败"), process)
         }
-        return FFmpegProcessDto(ffmpegProcessEntity, getAliveStatus(process), process)
+        return FFmpegProcessDto.createFromEntity(ffmpegProcessEntity, getAliveStatus(process), process)
     }
 
     override fun stopFFmpegs(ids: List<String>) {
@@ -55,7 +56,7 @@ class FFmpegServiceImpl : FFmpegService{
     override fun getFFmpegByIds(ids: List<String>): List<FFmpegProcessDto> {
         return ffmpegProcessMapper.selectBatchIds(ids).map {
             val process = processMap[it.id]
-            FFmpegProcessDto(it, getAliveStatus(process), process)
+            FFmpegProcessDto.createFromEntity(it, getAliveStatus(process), process)
         }
     }
 
@@ -63,7 +64,7 @@ class FFmpegServiceImpl : FFmpegService{
         val wrapper = KtQueryWrapper(FFmpegProcessEntity::class.java).`in`(FFmpegProcessEntity::name)
         return ffmpegProcessMapper.selectList(wrapper).map {
             val process = processMap[it.id]
-            FFmpegProcessDto(it, getAliveStatus(process), process)
+            FFmpegProcessDto.createFromEntity(it, getAliveStatus(process), process)
         }
     }
 
@@ -78,7 +79,7 @@ class FFmpegServiceImpl : FFmpegService{
         val pageDTO = PageDTO<FFmpegProcessDto>(selectPage.current, selectPage.size, selectPage.total)
         pageDTO.records = selectPage.records.map {
             val process = processMap[it.id]
-            FFmpegProcessDto(it, getAliveStatus(process), process)
+            FFmpegProcessDto.createFromEntity(it, getAliveStatus(process), process)
         }
         return pageDTO
     }

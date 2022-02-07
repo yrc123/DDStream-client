@@ -3,7 +3,7 @@ package com.yrc.ddstreamclient.service.ffmpeg
 import com.baomidou.mybatisplus.core.metadata.IPage
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page
 import com.yrc.common.pojo.ffmpeg.FFmpegConfigDto
-import com.yrc.ddstreamclient.pojo.ffmpeg.FFmpegProcessDto
+import com.yrc.common.pojo.ffmpeg.FFmpegProcessDto
 
 interface FFmpegService {
 

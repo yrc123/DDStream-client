@@ -24,7 +24,6 @@ dependencies {
     }
     implementation("org.springframework.boot:spring-boot-starter-jetty")
     implementation("io.github.hakky54:sslcontext-kickstart-for-jetty:7.2.1")
-//    implementation("io.github.hakky54:sslcontext-kickstart:7.2.1")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
@@ -43,7 +42,6 @@ dependencies {
     runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.11.2")
     //hash
     implementation("commons-codec:commons-codec:1.15")
-    implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     //h2驱动
     runtimeOnly("com.h2database:h2")
 

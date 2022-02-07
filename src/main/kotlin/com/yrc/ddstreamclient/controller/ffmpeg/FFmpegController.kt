@@ -5,7 +5,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page
 import com.yrc.common.pojo.common.ResponseDto
 import com.yrc.common.pojo.ffmpeg.FFmpegConfigDto
 import com.yrc.common.utils.ResponseUtils
-import com.yrc.ddstreamclient.pojo.ffmpeg.FFmpegProcessDto
+import com.yrc.common.pojo.ffmpeg.FFmpegProcessDto
 import com.yrc.ddstreamclient.service.ffmpeg.FFmpegService
 import org.springframework.web.bind.annotation.*
 import javax.annotation.Resource
