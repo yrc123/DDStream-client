@@ -1,6 +1,8 @@
-CREATE TABLE IF NOT EXISTS FFMPEG_PROCESS
+create table if not exists FFMPEG_PROCESS
 (
-    ID VARCHAR(64) PRIMARY KEY ,
-    NAME VARCHAR(128) ,
-    CONFIG VARCHAR(2048)
+    id     UUID not null
+        primary key,
+    name   VARCHAR(128),
+    config LONGVARCHAR(4096),
+    advanced_config LONGVARCHAR(4096)
 );
