@@ -25,7 +25,7 @@ class FFmpegServiceImpl : FFmpegService{
     private lateinit var ffmpegProcessMapper: FFmpegProcessMapper
 
     override fun startFFmpeg(processName: String, ffmpegConfigDto: FFmpegConfigDto): FFmpegProcessDto {
-        return startFFmpeg(processName, ffmpegConfigDto)
+        return startFFmpeg(processName, ffmpegConfigDto as FFmpegConfigItem)
     }
 
     override fun startFFmpeg(processName: String, ffmpegConfigList: List<String>): FFmpegProcessDto {
@@ -35,7 +35,14 @@ class FFmpegServiceImpl : FFmpegService{
     }
 
     private fun startFFmpeg(processName: String, ffmpegConfigItem: FFmpegConfigItem): FFmpegProcessDto {
-        val ffmpegProcessEntity = FFmpegProcessEntity(processName, ffmpegConfigItem)
+        val ffmpegProcessEntity = when(ffmpegConfigItem) {
+            is FFmpegConfigDto -> {
+                FFmpegProcessEntity(processName, ffmpegConfigItem)
+            }
+            else -> {
+                FFmpegProcessEntity(processName, ffmpegConfigItem.toList())
+            }
+        }
         ffmpegProcessMapper.insert(ffmpegProcessEntity)
         if (processMap.containsKey(ffmpegProcessEntity.id)) {
             throw Exception("重复的id")

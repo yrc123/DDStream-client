@@ -26,20 +26,18 @@ class JwtConfig {
     }
 
     class DecodeJwtKeyProvider(private val encodedPublicKeyBase64: String) : JwtKeyProvider{
-        private val publicKey: PublicKey
-        init {
-            val publickey = Decoders.BASE64.decode(encodedPublicKeyBase64)
-            publicKey = KeyFactory
+        private val _publicKey: PublicKey by lazy {
+            val publicKeyString = Decoders.BASE64.decode(encodedPublicKeyBase64)
+            KeyFactory
                 .getInstance("EC")
-                .generatePublic(X509EncodedKeySpec(publickey))
-            //私钥为PKCS8EncodedKeySpec
+                .generatePublic(X509EncodedKeySpec(publicKeyString))
         }
         override fun getPrivateKey(): PrivateKey {
             TODO("Not yet implemented")
         }
 
         override fun getPublicKey(): PublicKey {
-            return publicKey
+            return _publicKey
         }
     }
 }

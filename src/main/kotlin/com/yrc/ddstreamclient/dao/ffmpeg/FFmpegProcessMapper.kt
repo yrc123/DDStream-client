@@ -5,5 +5,4 @@ import com.yrc.ddstreamclient.pojo.ffmpeg.FFmpegProcessEntity
 import org.apache.ibatis.annotations.Mapper
 
 @Mapper
-interface FFmpegProcessMapper : BaseMapper<FFmpegProcessEntity>{
-}
+interface FFmpegProcessMapper : BaseMapper<FFmpegProcessEntity>

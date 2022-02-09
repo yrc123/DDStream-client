@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletResponse
 
 class JwtInterceptor(private val jwtService: JwtService) : HandlerInterceptor{
     override fun preHandle(request: HttpServletRequest, response: HttpServletResponse, handler: Any): Boolean {
+        //TODO("不使用魔法值")
         val jws = request.getHeader("jws")
         val data: String = when (request.method) {
             "GET", "DELETE" -> {

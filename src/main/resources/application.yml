@@ -1,6 +1,6 @@
 #服务器端口
 server:
-  port: 7000
+  port: 7001
 ssl:
   client-auth: true
   keystore-path: identity.jks
@@ -16,8 +16,10 @@ spring:
       #      host: 106.15.74.153
 #      host: localhost
       discovery:
-        auto-ip-address: true
+#        auto-ip-address: true
+        scheme: https
         fail-fast: false
+        hostname: 127.0.0.1
   web:
     resources:
       static-locations: file:./hls
@@ -48,4 +50,4 @@ management:
         show-details: always
 #自定义
 dd-stream:
-  jwt-public-key: ${DDSTREAM_PUBLIC_KEY:MIGbMBAGByqGSM49AgEGBSuBBAAjA4GGAAQButo0oZ2tDur8xnGn3mub5r9QmmSYf6LcyZv31DhSC1uchrfNi9ETiU39T3V1wtEPALtYEVeO7JbXuIw+Su9dIcQB6ujWodEDjwm2MpO0duFHWJR8tZMlZV8YF/LYyvjKBu0wefqzk2v68ir/mJ5hKNiDzCISDD1GvghLx1DZXT2RKCo=}
+  jwt-public-key: ${DDSTREAM_PUBLIC_KEY:MIGbMBAGByqGSM49AgEGBSuBBAAjA4GGAAQBISg60Dp+hcyNwDGK3DAuB+rE9SEEMvsMyGwzsJSPWOtVtVkf1js1U4/oCHziW2CXrGYk5QQcp8hJJmMrmulM1WUBrmiiMK8VK0J/0RRV8qx1JlWWCPuHnC4vof6biCnnPB+FDheZyqVyOKzx4DZ0Ypn61Szj1I8qmL25qpojz4yjB6M=}
