@@ -9,6 +9,7 @@ import com.yrc.common.pojo.ffmpeg.FFmpegConfigDto
 import com.yrc.common.pojo.ffmpeg.FFmpegConfigItem
 import com.yrc.common.pojo.ffmpeg.FFmpegProcessDto
 import com.yrc.ddstreamclient.dao.ffmpeg.FFmpegProcessMapper
+import com.yrc.ddstreamclient.exception.common.EnumClientException
 import com.yrc.ddstreamclient.pojo.ffmpeg.FFmpegProcessBuilder
 import com.yrc.ddstreamclient.pojo.ffmpeg.FFmpegProcessEntity
 import com.yrc.ddstreamclient.pojo.ffmpeg.createFromEntity
@@ -51,7 +52,8 @@ class FFmpegServiceImpl : FFmpegService{
         }
         val process = FFmpegProcessBuilder(ffmpegConfigItem).start()
         if (process != null) {
-            processMap.put(ffmpegProcessEntity.id ?: throw Exception("process运行失败"), process)
+            processMap[ffmpegProcessEntity.id
+                ?: throw EnumClientException.PROCESS_RUN_ERROR.build()] = process
         }
         return FFmpegProcessDto.createFromEntity(ffmpegProcessEntity, getAliveStatus(process), process)
     }
@@ -63,6 +65,9 @@ class FFmpegServiceImpl : FFmpegService{
     }
 
     override fun getFFmpegByIds(ids: List<String>): List<FFmpegProcessDto> {
+        if (ids.isEmpty()) {
+            return listOf()
+        }
         return ffmpegProcessMapper.selectBatchIds(ids).map {
             val process = processMap[it.id]
             FFmpegProcessDto.createFromEntity(it, getAliveStatus(process), process)
@@ -70,7 +75,11 @@ class FFmpegServiceImpl : FFmpegService{
     }
 
     override fun getFFmpegByNames(names: List<String>): List<FFmpegProcessDto> {
-        val wrapper = KtQueryWrapper(FFmpegProcessEntity::class.java).`in`(FFmpegProcessEntity::name)
+        if (names.isEmpty()) {
+            return listOf()
+        }
+        val wrapper = KtQueryWrapper(FFmpegProcessEntity::class.java)
+            .`in`(FFmpegProcessEntity::name, names)
         return ffmpegProcessMapper.selectList(wrapper).map {
             val process = processMap[it.id]
             FFmpegProcessDto.createFromEntity(it, getAliveStatus(process), process)
@@ -78,6 +87,9 @@ class FFmpegServiceImpl : FFmpegService{
     }
 
     override fun deleteFFmpegProcessByIds(ids: List<String>) {
+        if (ids.isEmpty()) {
+            return
+        }
         ffmpegProcessMapper.deleteBatchIds(ids)
     }
 
@@ -93,8 +105,9 @@ class FFmpegServiceImpl : FFmpegService{
         return pageDTO
     }
 
-    override fun getProcessMap(): Map<String, Process> {
+    override fun getRunningProcessIdList(): List<String> {
         return processMap
+            .map { it.key }
     }
 
     private fun getAliveStatus(process: Process?): Boolean {

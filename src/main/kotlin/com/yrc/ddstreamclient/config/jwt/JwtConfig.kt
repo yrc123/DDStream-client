@@ -1,10 +1,10 @@
 package com.yrc.ddstreamclient.config.jwt
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.yrc.common.exception.common.impl.SimpleException
 import com.yrc.common.service.jwt.JwtKeyProvider
 import com.yrc.common.service.jwt.JwtService
 import com.yrc.common.service.jwt.impl.JwtServiceImpl
+import com.yrc.ddstreamclient.exception.common.EnumClientException
 import io.jsonwebtoken.io.Decoders
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
@@ -34,7 +34,7 @@ class JwtConfig {
                 .generatePublic(X509EncodedKeySpec(publicKeyString))
         }
         override fun getPrivateKey(): PrivateKey {
-            throw SimpleException(400, "not support decode jws")
+            throw EnumClientException.NOT_SUPPORT_ENCODE_JWS.build()
         }
 
         override fun getPublicKey(): PublicKey {

@@ -14,9 +14,7 @@ class DistroyFFmpegBean : DisposableBean{
 
     override fun destroy() {
         logger.info("停止ffmpeg进程")
-        ffmpegService.getProcessMap().forEach {
-            logger.info("停止${it.value}")
-            it.value.destroy()
-        }
+        val idList = ffmpegService.getRunningProcessIdList()
+        ffmpegService.stopFFmpegs(idList)
     }
 }

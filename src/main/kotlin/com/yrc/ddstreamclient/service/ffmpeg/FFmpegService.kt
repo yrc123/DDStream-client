@@ -14,5 +14,5 @@ interface FFmpegService {
     fun getFFmpegByNames(names: List<String>): List<FFmpegProcessDto>
     fun deleteFFmpegProcessByIds(ids: List<String>)
     fun getFFmpegProcessList(page: Page<FFmpegProcessDto>): IPage<FFmpegProcessDto>
-    fun getProcessMap(): Map<String, Process>
+    fun getRunningProcessIdList(): List<String>
 }

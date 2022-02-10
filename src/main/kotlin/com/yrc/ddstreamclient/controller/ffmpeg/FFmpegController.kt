@@ -2,11 +2,11 @@ package com.yrc.ddstreamclient.controller.ffmpeg
 
 import com.baomidou.mybatisplus.core.metadata.IPage
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page
-import com.yrc.common.exception.common.impl.SimpleException
 import com.yrc.common.pojo.common.ResponseDto
 import com.yrc.common.pojo.ffmpeg.FFmpegConfigDto
 import com.yrc.common.pojo.ffmpeg.FFmpegProcessDto
 import com.yrc.common.utils.ResponseUtils
+import com.yrc.ddstreamclient.exception.common.EnumClientException
 import com.yrc.ddstreamclient.service.ffmpeg.FFmpegService
 import org.springframework.web.bind.annotation.*
 import javax.annotation.Resource
@@ -40,7 +40,7 @@ class FFmpegController {
     fun deleteProcess(@PathVariable("id") id: String): ResponseDto<String> {
         val process = ffmpegService.getFFmpegByIds(listOf(id)).first()
         if (process.alive) {
-            throw SimpleException(400, "process not stop")
+            throw EnumClientException.PROCESS_NOT_STOP.build()
         }
         ffmpegService.deleteFFmpegProcessByIds(listOf(id))
         return ResponseUtils.successStringResponse()
