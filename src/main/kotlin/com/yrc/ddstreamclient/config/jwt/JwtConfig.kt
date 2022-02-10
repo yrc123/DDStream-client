@@ -1,6 +1,7 @@
 package com.yrc.ddstreamclient.config.jwt
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.yrc.common.exception.common.impl.SimpleException
 import com.yrc.common.service.jwt.JwtKeyProvider
 import com.yrc.common.service.jwt.JwtService
 import com.yrc.common.service.jwt.impl.JwtServiceImpl
@@ -33,7 +34,7 @@ class JwtConfig {
                 .generatePublic(X509EncodedKeySpec(publicKeyString))
         }
         override fun getPrivateKey(): PrivateKey {
-            TODO("Not yet implemented")
+            throw SimpleException(400, "not support decode jws")
         }
 
         override fun getPublicKey(): PublicKey {

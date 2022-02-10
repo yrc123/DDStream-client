@@ -1,7 +1,7 @@
 package com.yrc.ddstreamclient.config
 
 import com.ecwid.consul.v1.ConsulClient
-import com.yrc.common.exception.IpNotGetException
+import com.yrc.common.exception.ip.IpNotGetExcetption
 import com.yrc.common.utils.IpUtils
 import org.apache.commons.logging.LogFactory
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
@@ -13,7 +13,6 @@ import org.springframework.context.annotation.Configuration
 @Configuration
 class ConsulConfig {
     companion object {
-        private const val IP_NOT_GET_LOG = "无法获取公网ip"
         private val logger = LogFactory.getLog(ConsulConfig::class.java)!!
     }
 
@@ -22,7 +21,7 @@ class ConsulConfig {
      * 将内网ip替换为公网ip
      */
     @Bean
-    @ConditionalOnProperty(value = ["spring.cloud.consul.discovery.auto-ip-address"], havingValue = true.toString())
+    @ConditionalOnProperty(value = ["dd-stream.cloud.consul.discovery.auto-ip-address"], havingValue = true.toString())
     fun consulDiscoveryClient(
         consulClient: ConsulClient?,
         discoveryProperties: ConsulDiscoveryProperties?
@@ -33,8 +32,8 @@ class ConsulConfig {
                 it.isPreferIpAddress = true
                 it.ipAddress = publicIpAddress
             }
-        } catch (e: IpNotGetException) {
-            logger.error(IP_NOT_GET_LOG)
+        } catch (e: IpNotGetExcetption) {
+            logger.error(e.message)
         }
         return ConsulDiscoveryClient(consulClient, discoveryProperties)
     }

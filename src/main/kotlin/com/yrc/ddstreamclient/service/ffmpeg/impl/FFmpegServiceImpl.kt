@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage
 import com.baomidou.mybatisplus.extension.kotlin.KtQueryWrapper
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page
 import com.baomidou.mybatisplus.extension.plugins.pagination.PageDTO
+import com.yrc.common.exception.common.ParametersExceptionFacotry
 import com.yrc.common.pojo.ffmpeg.FFmpegConfigDto
 import com.yrc.common.pojo.ffmpeg.FFmpegConfigItem
 import com.yrc.common.pojo.ffmpeg.FFmpegProcessDto
@@ -45,7 +46,8 @@ class FFmpegServiceImpl : FFmpegService{
         }
         ffmpegProcessMapper.insert(ffmpegProcessEntity)
         if (processMap.containsKey(ffmpegProcessEntity.id)) {
-            throw Exception("重复的id")
+            throw ParametersExceptionFacotry
+                .duplicateException(listOf("id" to ffmpegProcessEntity.id))
         }
         val process = FFmpegProcessBuilder(ffmpegConfigItem).start()
         if (process != null) {
