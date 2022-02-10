@@ -1,6 +1,6 @@
 create table if not exists FFMPEG_PROCESS
 (
-    id     UUID not null
+    id     VARCHAR(64) not null
         primary key,
     name   VARCHAR(128),
     config LONGVARCHAR(4096),
