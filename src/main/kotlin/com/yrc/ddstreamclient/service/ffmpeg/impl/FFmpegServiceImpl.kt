@@ -50,7 +50,7 @@ class FFmpegServiceImpl : FFmpegService{
             throw ParametersExceptionFacotry
                 .duplicateException(listOf("id" to ffmpegProcessEntity.id))
         }
-        val process = FFmpegProcessBuilder(ffmpegConfigItem).start()
+        val process = FFmpegProcessBuilder(processName, ffmpegConfigItem).start()
         if (process != null) {
             processMap[ffmpegProcessEntity.id
                 ?: throw EnumClientException.PROCESS_RUN_ERROR.build()] = process

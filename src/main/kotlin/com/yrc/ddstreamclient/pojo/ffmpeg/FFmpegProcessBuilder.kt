@@ -3,7 +3,8 @@ package com.yrc.ddstreamclient.pojo.ffmpeg
 import com.yrc.common.pojo.ffmpeg.FFmpegConfigItem
 import org.bytedeco.javacpp.Loader
 
-class FFmpegProcessBuilder(private val config: FFmpegConfigItem){
+class FFmpegProcessBuilder(private val id: String,
+                           private val config: FFmpegConfigItem){
     companion object {
         val ffmpeg = Loader.load(org.bytedeco.ffmpeg.ffmpeg::class.java)
     }

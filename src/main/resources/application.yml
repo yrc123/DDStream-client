@@ -43,10 +43,14 @@ management:
   endpoints:
     web:
       exposure:
-        include: metrics,health
-    endpoint:
-      health:
-        show-details: always
+        include: metrics,health,logfile
+  endpoint:
+    health:
+      show-details: always
+logging:
+  file:
+    path: log
+
 #自定义
 dd-stream:
   jwt-public-key: ${DDSTREAM_PUBLIC_KEY:MIGbMBAGByqGSM49AgEGBSuBBAAjA4GGAAQBISg60Dp+hcyNwDGK3DAuB+rE9SEEMvsMyGwzsJSPWOtVtVkf1js1U4/oCHziW2CXrGYk5QQcp8hJJmMrmulM1WUBrmiiMK8VK0J/0RRV8qx1JlWWCPuHnC4vof6biCnnPB+FDheZyqVyOKzx4DZ0Ypn61Szj1I8qmL25qpojz4yjB6M=}
