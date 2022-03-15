@@ -19,30 +19,29 @@ import java.util.concurrent.ConcurrentHashMap
 import javax.annotation.Resource
 
 @Service
-class FFmpegServiceImpl : FFmpegService{
+class FFmpegServiceImpl(
+    private  val ffmpegProcessMapper: FFmpegProcessMapper
+) : FFmpegService {
 
     private val processMap = ConcurrentHashMap<String, Process>()
 
-    @Resource
-    private lateinit var ffmpegProcessMapper: FFmpegProcessMapper
-
-    override fun startFFmpeg(processName: String, ffmpegConfigDto: FFmpegConfigDto): FFmpegProcessDto {
-        return startFFmpeg(processName, ffmpegConfigDto as FFmpegConfigItem)
+    override fun startFFmpeg(id: String, ffmpegConfigDto: FFmpegConfigDto): FFmpegProcessDto {
+        return startFFmpeg(id, ffmpegConfigDto as FFmpegConfigItem)
     }
 
-    override fun startFFmpeg(processName: String, ffmpegConfigList: List<String>): FFmpegProcessDto {
-        return startFFmpeg(processName) {
+    override fun startFFmpeg(id: String, ffmpegConfigList: List<String>): FFmpegProcessDto {
+        return startFFmpeg(id) {
             ffmpegConfigList
         }
     }
 
-    private fun startFFmpeg(processName: String, ffmpegConfigItem: FFmpegConfigItem): FFmpegProcessDto {
+    private fun startFFmpeg(id: String, ffmpegConfigItem: FFmpegConfigItem): FFmpegProcessDto {
         val ffmpegProcessEntity = when(ffmpegConfigItem) {
             is FFmpegConfigDto -> {
-                FFmpegProcessEntity(processName, ffmpegConfigItem)
+                FFmpegProcessEntity(id, ffmpegConfigItem)
             }
             else -> {
-                FFmpegProcessEntity(processName, ffmpegConfigItem.toList())
+                FFmpegProcessEntity(id, ffmpegConfigItem.toList())
             }
         }
         ffmpegProcessMapper.insert(ffmpegProcessEntity)
@@ -50,7 +49,7 @@ class FFmpegServiceImpl : FFmpegService{
             throw ParametersExceptionFacotry
                 .duplicateException(listOf("id" to ffmpegProcessEntity.id))
         }
-        val process = FFmpegProcessBuilder(processName, ffmpegConfigItem).start()
+        val process = FFmpegProcessBuilder(id, ffmpegConfigItem).start()
         if (process != null) {
             processMap[ffmpegProcessEntity.id
                 ?: throw EnumClientException.PROCESS_RUN_ERROR.build()] = process
@@ -69,18 +68,6 @@ class FFmpegServiceImpl : FFmpegService{
             return listOf()
         }
         return ffmpegProcessMapper.selectBatchIds(ids).map {
-            val process = processMap[it.id]
-            FFmpegProcessDto.createFromEntity(it, getAliveStatus(process), process)
-        }
-    }
-
-    override fun getFFmpegByNames(names: List<String>): List<FFmpegProcessDto> {
-        if (names.isEmpty()) {
-            return listOf()
-        }
-        val wrapper = KtQueryWrapper(FFmpegProcessEntity::class.java)
-            .`in`(FFmpegProcessEntity::name, names)
-        return ffmpegProcessMapper.selectList(wrapper).map {
             val process = processMap[it.id]
             FFmpegProcessDto.createFromEntity(it, getAliveStatus(process), process)
         }

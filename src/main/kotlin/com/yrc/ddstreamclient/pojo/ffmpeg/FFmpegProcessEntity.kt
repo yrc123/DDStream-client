@@ -9,12 +9,11 @@ import com.yrc.common.pojo.ffmpeg.FFmpegConfigDto
 
 
 @TableName(value = "FFMPEG_PROCESS", autoResultMap = true)
-data class FFmpegProcessEntity(@TableId(type = IdType.ASSIGN_UUID) var id: String? = null,
-                               var name: String? = null,
+data class FFmpegProcessEntity(@TableId(type = IdType.INPUT) var id: String? = null,
                                @TableField(typeHandler = JacksonTypeHandler::class)
                                var config: FFmpegConfigDto? = null,
                                @TableField(typeHandler = JacksonTypeHandler::class)
                                var advancedConfig: List<String>? = null) {
-    constructor(name: String,config: FFmpegConfigDto) : this(null, name, config, null)
-    constructor(name: String,advancedConfig: List<String>) : this(null, name, null, advancedConfig)
+    constructor(id: String, config: FFmpegConfigDto) : this(id, config, null)
+    constructor(id: String,advancedConfig: List<String>) : this(id, null, advancedConfig)
 }

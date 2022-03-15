@@ -9,7 +9,6 @@ fun FFmpegProcessDto.Companion.createFromEntity(
 ): FFmpegProcessDto {
     return FFmpegProcessDto(
         ffmpegProcessEntity.id!!,
-        ffmpegProcessEntity.name!!,
         ffmpegProcessEntity.config,
         ffmpegProcessEntity.advancedConfig,
         alive,
