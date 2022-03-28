@@ -7,10 +7,11 @@ import com.yrc.common.pojo.ffmpeg.FFmpegProcessDto
 
 interface FFmpegService {
 
-    fun startFFmpeg(id: String, ffmpegConfigDto: FFmpegConfigDto): FFmpegProcessDto
-    fun startFFmpeg(id: String, ffmpegConfigList: List<String>): FFmpegProcessDto
-    fun stopFFmpegs(ids: List<String>)
+    fun startFFmpeg(processName: String, ffmpegConfigDto: FFmpegConfigDto): FFmpegProcessDto
+    fun startFFmpeg(processName: String, ffmpegConfigList: List<String>): FFmpegProcessDto
+    fun stopFFmpegs(names: List<String>)
     fun getFFmpegByIds(ids: List<String>): List<FFmpegProcessDto>
+    fun getFFmpegByNames(names: List<String>): List<FFmpegProcessDto>
     fun deleteFFmpegProcessByIds(ids: List<String>)
     fun getFFmpegProcessList(page: Page<FFmpegProcessDto>): IPage<FFmpegProcessDto>
     fun getRunningProcessIdList(): List<String>

@@ -9,33 +9,35 @@ import com.yrc.common.utils.ResponseUtils
 import com.yrc.ddstreamclient.exception.common.EnumClientException
 import com.yrc.ddstreamclient.service.ffmpeg.FFmpegService
 import org.springframework.web.bind.annotation.*
+import javax.annotation.Resource
 
 @RestController
 @RequestMapping("/api/client")
-class FFmpegController(
-    private val ffmpegService: FFmpegService
-) {
+class FFmpegController {
 
-    @PostMapping("/ffmpeg/{id}:start")
-    fun startPush(@PathVariable id: String, @RequestBody configDto: FFmpegConfigDto): ResponseDto<FFmpegProcessDto> {
+    @Resource
+    lateinit var ffmpegService: FFmpegService
+
+    @PostMapping("/ffmpeg/{name}:start")
+    fun startPush(@PathVariable("name") name: String, @RequestBody configDto: FFmpegConfigDto): ResponseDto<FFmpegProcessDto> {
         return ResponseUtils
-            .successResponse(ffmpegService.startFFmpeg(id, configDto))
+            .successResponse(ffmpegService.startFFmpeg(name, configDto))
     }
 
-    @PostMapping("/ffmpeg/{id}:start-with-list")
-    fun startPushWithString(@PathVariable id: String, @RequestBody configList: List<String>): ResponseDto<FFmpegProcessDto> {
+    @PostMapping("/ffmpeg/{name}:start-with-config-list")
+    fun startPushWithConfigList(@PathVariable("name") name: String, @RequestBody configList: List<String>): ResponseDto<FFmpegProcessDto> {
         return ResponseUtils
-            .successResponse(ffmpegService.startFFmpeg(id, configList))
+            .successResponse(ffmpegService.startFFmpeg(name, configList))
     }
 
-    @GetMapping("/ffmpeg/{id}:stop")
-    fun stopPush(@PathVariable id: String): ResponseDto<String>{
-        ffmpegService.stopFFmpegs(listOf(id))
+    @GetMapping("/ffmpeg/{name}:stop")
+    fun stopPush(@PathVariable("name") name: String): ResponseDto<String>{
+        ffmpegService.stopFFmpegs(listOf(name))
         return ResponseUtils.successStringResponse()
     }
 
-    @DeleteMapping("/ffmpeg/{id}")
-    fun deleteProcess(@PathVariable id: String): ResponseDto<String> {
+    @DeleteMapping("/ffmpeg/{id}:delete-by-id")
+    fun deleteProcess(@PathVariable("id") id: String): ResponseDto<String> {
         val process = ffmpegService.getFFmpegByIds(listOf(id)).first()
         if (process.alive) {
             throw EnumClientException.PROCESS_NOT_STOP.build()
@@ -44,15 +46,20 @@ class FFmpegController(
         return ResponseUtils.successStringResponse()
     }
 
-    @GetMapping("/ffmpeg")
-    fun listProcesses(page: Page<FFmpegProcessDto>): ResponseDto<IPage<FFmpegProcessDto>> {
+    @PostMapping("/ffmpeg")
+    fun listProcesses(@RequestBody page: Page<FFmpegProcessDto>): ResponseDto<IPage<FFmpegProcessDto>> {
         return ResponseUtils
             .successResponse(ffmpegService.getFFmpegProcessList(page))
     }
 
     @GetMapping("/ffmpeg/{id}")
-    fun getFFmpegById(@PathVariable id: String): ResponseDto<FFmpegProcessDto> {
+    fun getFFmpegById(@PathVariable("id") id: String): ResponseDto<FFmpegProcessDto> {
         return ResponseUtils
             .successResponse(ffmpegService.getFFmpegByIds(listOf( id)).first())
+    }
+    @GetMapping("/ffmpeg/{name}")
+    fun getFFmpegByName(@PathVariable("name") name: String): ResponseDto<List<FFmpegProcessDto>> {
+        return ResponseUtils
+            .successResponse(ffmpegService.getFFmpegByNames(listOf(name)))
     }
 }

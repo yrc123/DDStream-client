@@ -19,47 +19,77 @@ import java.util.concurrent.ConcurrentHashMap
 import javax.annotation.Resource
 
 @Service
-class FFmpegServiceImpl(
-    private  val ffmpegProcessMapper: FFmpegProcessMapper
-) : FFmpegService {
+class FFmpegServiceImpl : FFmpegService{
 
-    private val processMap = ConcurrentHashMap<String, Process>()
+    private val processMap = ConcurrentHashMap<String, FFmpegProcessDto>()
+    private val outputUriSet = ConcurrentHashMap<String, Any>().keySet(true)
 
-    override fun startFFmpeg(id: String, ffmpegConfigDto: FFmpegConfigDto): FFmpegProcessDto {
-        return startFFmpeg(id, ffmpegConfigDto as FFmpegConfigItem)
+    @Resource
+    private lateinit var ffmpegProcessMapper: FFmpegProcessMapper
+
+    override fun startFFmpeg(processName: String, ffmpegConfigDto: FFmpegConfigDto): FFmpegProcessDto {
+        return startFFmpeg(processName, ffmpegConfigDto as FFmpegConfigItem)
     }
 
-    override fun startFFmpeg(id: String, ffmpegConfigList: List<String>): FFmpegProcessDto {
-        return startFFmpeg(id) {
+    override fun startFFmpeg(processName: String, ffmpegConfigList: List<String>): FFmpegProcessDto {
+        return startFFmpeg(processName) {
             ffmpegConfigList
         }
     }
 
-    private fun startFFmpeg(id: String, ffmpegConfigItem: FFmpegConfigItem): FFmpegProcessDto {
+    private fun startFFmpeg(processName: String, ffmpegConfigItem: FFmpegConfigItem): FFmpegProcessDto {
+
         val ffmpegProcessEntity = when(ffmpegConfigItem) {
             is FFmpegConfigDto -> {
-                FFmpegProcessEntity(id, ffmpegConfigItem)
+                val newOutputSet = ffmpegConfigItem.ffmpegOutputList?.mapNotNull {
+                    it.ffmpegOutput?.outputUri
+                }?.toSet() ?: setOf()
+                synchronized(outputUriSet) {
+                    val intersectSet = outputUriSet intersect newOutputSet
+                    if (intersectSet.isNotEmpty()) {
+                        throw ParametersExceptionFacotry
+                            .duplicateException(
+                                intersectSet.map{ "outputUri" to it }
+                            )
+                    } else {
+                        outputUriSet.addAll(newOutputSet)
+                    }
+                }
+                FFmpegProcessEntity(processName, ffmpegConfigItem)
             }
             else -> {
-                FFmpegProcessEntity(id, ffmpegConfigItem.toList())
+                FFmpegProcessEntity(processName, ffmpegConfigItem.toList())
             }
         }
-        ffmpegProcessMapper.insert(ffmpegProcessEntity)
-        if (processMap.containsKey(ffmpegProcessEntity.id)) {
-            throw ParametersExceptionFacotry
-                .duplicateException(listOf("id" to ffmpegProcessEntity.id))
+        synchronized(processMap) {
+            if (processMap.containsKey(ffmpegProcessEntity.name)) {
+                throw ParametersExceptionFacotry
+                    .duplicateException(listOf("name" to ffmpegProcessEntity.name))
+            }
+            val process = FFmpegProcessBuilder(processName, ffmpegConfigItem).start()
+            ffmpegProcessMapper.insert(ffmpegProcessEntity)
+            val ffmpegProcessDto = FFmpegProcessDto.createFromEntity(ffmpegProcessEntity, getAliveStatus(process), process)
+            if (process != null) {
+                processMap[ffmpegProcessEntity.name
+                    ?: throw EnumClientException.PROCESS_RUN_ERROR.build()] = ffmpegProcessDto
+            }
+            return ffmpegProcessDto
         }
-        val process = FFmpegProcessBuilder(id, ffmpegConfigItem).start()
-        if (process != null) {
-            processMap[ffmpegProcessEntity.id
-                ?: throw EnumClientException.PROCESS_RUN_ERROR.build()] = process
-        }
-        return FFmpegProcessDto.createFromEntity(ffmpegProcessEntity, getAliveStatus(process), process)
     }
 
-    override fun stopFFmpegs(ids: List<String>) {
-        ids.forEach {
-            processMap[it]?.destroy()
+    override fun stopFFmpegs(names: List<String>) {
+        names.forEach {
+            processMap[it]?.process?.destroy()
+            synchronized(outputUriSet) {
+                outputUriSet.removeAll(processMap[it]?.config
+                    ?.ffmpegOutputList
+                    ?.mapNotNull { outputItem -> outputItem.ffmpegOutput?.outputUri }
+                    ?.toSet() ?: setOf<String>()
+                )
+            }
+            synchronized(processMap) {
+                processMap.remove(it)
+            }
         }
     }
 
@@ -68,8 +98,18 @@ class FFmpegServiceImpl(
             return listOf()
         }
         return ffmpegProcessMapper.selectBatchIds(ids).map {
-            val process = processMap[it.id]
-            FFmpegProcessDto.createFromEntity(it, getAliveStatus(process), process)
+            getProcessDtoByEntityName(it)
+        }
+    }
+
+    override fun getFFmpegByNames(names: List<String>): List<FFmpegProcessDto> {
+        if (names.isEmpty()) {
+            return listOf()
+        }
+        val wrapper = KtQueryWrapper(FFmpegProcessEntity::class.java)
+            .`in`(FFmpegProcessEntity::name, names)
+        return ffmpegProcessMapper.selectList(wrapper).map {
+            getProcessDtoByEntityName(it)
         }
     }
 
@@ -86,8 +126,7 @@ class FFmpegServiceImpl(
         val selectPage = ffmpegProcessMapper.selectPage(entityPage, wrapper)
         val pageDTO = PageDTO<FFmpegProcessDto>(selectPage.current, selectPage.size, selectPage.total)
         pageDTO.records = selectPage.records.map {
-            val process = processMap[it.id]
-            FFmpegProcessDto.createFromEntity(it, getAliveStatus(process), process)
+            getProcessDtoByEntityName(it)
         }
         return pageDTO
     }
@@ -99,6 +138,18 @@ class FFmpegServiceImpl(
 
     private fun getAliveStatus(process: Process?): Boolean {
         return process?.isAlive ?: false
+    }
+
+    private fun getProcessDtoByEntityName(entity: FFmpegProcessEntity): FFmpegProcessDto {
+        val processDto = processMap[entity.name]
+        return if (processDto?.id == entity.id) {
+            FFmpegProcessDto.createFromEntity(entity,
+                getAliveStatus(processDto?.process),
+                processDto?.process
+            )
+        } else {
+            FFmpegProcessDto.createFromEntity(entity, false, null)
+        }
     }
 
 }
