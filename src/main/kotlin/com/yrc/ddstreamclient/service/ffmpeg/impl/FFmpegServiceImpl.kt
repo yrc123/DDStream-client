@@ -66,8 +66,8 @@ class FFmpegServiceImpl : FFmpegService{
                 throw ParametersExceptionFacotry
                     .duplicateException(listOf("name" to ffmpegProcessEntity.name))
             }
-            val process = FFmpegProcessBuilder(processName, ffmpegConfigItem).start()
             ffmpegProcessMapper.insert(ffmpegProcessEntity)
+            val process = FFmpegProcessBuilder(processName, ffmpegConfigItem).start()
             val ffmpegProcessDto = FFmpegProcessDto.createFromEntity(ffmpegProcessEntity, getAliveStatus(process), process)
             if (process != null) {
                 processMap[ffmpegProcessEntity.name

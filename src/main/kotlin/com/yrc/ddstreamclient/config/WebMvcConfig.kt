@@ -1,6 +1,7 @@
 package com.yrc.ddstreamclient.config
 
 import com.yrc.common.service.jwt.JwtService
+import com.yrc.ddstreamclient.config.jwt.JwtInterceptor
 import org.springframework.context.annotation.Configuration
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer

@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor
 import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerInterceptor
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.kotlinModule
+import com.yrc.common.config.mybatisplus.TimeMetaObjectHandler
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Primary
@@ -24,5 +25,10 @@ class MybatisPlusConfig {
     @Primary
     fun jacksonObjectMapper(builder: Jackson2ObjectMapperBuilder): ObjectMapper {
         return builder.createXmlMapper(false).build<ObjectMapper?>().registerModule(kotlinModule())
+    }
+
+    @Bean
+    fun timeMetaObjectHandle(): TimeMetaObjectHandler {
+        return TimeMetaObjectHandler()
     }
 }
