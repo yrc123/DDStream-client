@@ -27,18 +27,26 @@ class JwtConfig {
     }
 
     class DecodeJwtKeyProvider(private val encodedPublicKeyBase64: String) : JwtKeyProvider{
-        private val _publicKey: PublicKey by lazy {
-            val publicKeyString = Decoders.BASE64.decode(encodedPublicKeyBase64)
-            KeyFactory
-                .getInstance("EC")
-                .generatePublic(X509EncodedKeySpec(publicKeyString))
-        }
+        private var _publicKey: PublicKey = selectPublicKey()
         override fun getPrivateKey(): PrivateKey {
             throw EnumClientException.NOT_SUPPORT_ENCODE_JWS.build()
         }
 
         override fun getPublicKey(): PublicKey {
             return _publicKey
+        }
+
+        override fun reset() {
+            synchronized(_publicKey) {
+                _publicKey = selectPublicKey()
+            }
+        }
+
+        private fun selectPublicKey(): PublicKey {
+            val publicKeyString = Decoders.BASE64.decode(encodedPublicKeyBase64)
+            return KeyFactory
+                .getInstance("EC")
+                .generatePublic(X509EncodedKeySpec(publicKeyString))
         }
     }
 }

@@ -34,10 +34,6 @@ spring:
     console:
       enabled: true
       path: /h2
-  sql:
-    init:
-      mode: always
-      data-locations: classpath:sql/init.sql
 #健康检查指标
 management:
   endpoints:
@@ -53,7 +49,7 @@ logging:
 
 #自定义
 dd-stream:
-  jwt-public-key: ${DDSTREAM_PUBLIC_KEY:MIGbMBAGByqGSM49AgEGBSuBBAAjA4GGAAQBISg60Dp+hcyNwDGK3DAuB+rE9SEEMvsMyGwzsJSPWOtVtVkf1js1U4/oCHziW2CXrGYk5QQcp8hJJmMrmulM1WUBrmiiMK8VK0J/0RRV8qx1JlWWCPuHnC4vof6biCnnPB+FDheZyqVyOKzx4DZ0Ypn61Szj1I8qmL25qpojz4yjB6M=}
+  jwt-public-key: ${DDSTREAM_PUBLIC_KEY}
   cloud:
     consul:
       discovery:

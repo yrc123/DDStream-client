@@ -45,6 +45,7 @@ dependencies {
     //h2驱动
     runtimeOnly("com.h2database:h2")
 
+    implementation("org.flywaydb:flyway-core:8.5.4")
     implementation("commons-io:commons-io:2.11.0")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("junit:junit:4.13.1")

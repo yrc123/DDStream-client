@@ -14,7 +14,7 @@ enum class EnumClientException(private val exception: SimpleException) {
     ),
     NOT_SUPPORT_ENCODE_JWS(
         SimpleException(HttpStatus.SC_BAD_REQUEST,
-        "not support decode jws")
+        "not support encode jws")
     ),
     ;
     fun build(): SimpleException {
