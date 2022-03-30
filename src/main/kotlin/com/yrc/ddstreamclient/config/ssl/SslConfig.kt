@@ -48,7 +48,7 @@ class SslConfig {
 
     private fun readStoreFromRemote(): InputStream {
 //        TODO("从远端获取证书")
-        return FileInputStream("hls/key.keystore")
+        return FileInputStream("video/key.keystore")
     }
 
     @Bean

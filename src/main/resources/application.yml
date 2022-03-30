@@ -21,9 +21,9 @@ spring:
         hostname: 127.0.0.1
   web:
     resources:
-      static-locations: file:./hls
+      static-locations: file:./video
   mvc:
-    static-path-pattern: /hls/**
+    static-path-pattern: /video/**
 
   #h2数据库
   datasource:
