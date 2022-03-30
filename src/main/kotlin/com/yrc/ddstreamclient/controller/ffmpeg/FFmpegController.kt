@@ -3,7 +3,6 @@ package com.yrc.ddstreamclient.controller.ffmpeg
 import com.baomidou.mybatisplus.core.metadata.IPage
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page
 import com.yrc.common.pojo.common.ResponseDto
-import com.yrc.common.pojo.ffmpeg.FFmpegConfigDto
 import com.yrc.common.pojo.ffmpeg.FFmpegProcessDto
 import com.yrc.common.utils.ResponseUtils
 import com.yrc.ddstreamclient.exception.common.EnumClientException
@@ -19,15 +18,9 @@ class FFmpegController {
     lateinit var ffmpegService: FFmpegService
 
     @PostMapping("/ffmpeg/{name}:start")
-    fun startPush(@PathVariable("name") name: String, @RequestBody configDto: FFmpegConfigDto): ResponseDto<FFmpegProcessDto> {
+    fun startPush(@PathVariable("name") name: String, @RequestBody ffmpegProcessDto: FFmpegProcessDto): ResponseDto<FFmpegProcessDto> {
         return ResponseUtils
-            .successResponse(ffmpegService.startFFmpeg(name, configDto))
-    }
-
-    @PostMapping("/ffmpeg/{name}:start-with-config-list")
-    fun startPushWithConfigList(@PathVariable("name") name: String, @RequestBody configList: List<String>): ResponseDto<FFmpegProcessDto> {
-        return ResponseUtils
-            .successResponse(ffmpegService.startFFmpeg(name, configList))
+            .successResponse(ffmpegService.startFFmpeg(ffmpegProcessDto))
     }
 
     @GetMapping("/ffmpeg/{name}:stop")
@@ -39,7 +32,7 @@ class FFmpegController {
     @DeleteMapping("/ffmpeg/{id}:delete-by-id")
     fun deleteProcess(@PathVariable("id") id: String): ResponseDto<String> {
         val process = ffmpegService.getFFmpegByIds(listOf(id)).first()
-        if (process.alive) {
+        if (process.alive == true) {
             throw EnumClientException.PROCESS_NOT_STOP.build()
         }
         ffmpegService.deleteFFmpegProcessByIds(listOf(id))

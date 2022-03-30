@@ -28,7 +28,7 @@ class SslController(private val sslService: SwappableSslService) {
     @GetMapping("/ssl")
     fun updateKeyManager() {
         TODO("动态文件以及密码")
-        val fileInputStream = FileInputStream("hls/newkey.keystore")
+        val fileInputStream = FileInputStream("video/newkey.keystore")
         val keyStore = KeyStoreUtils.loadKeyStore(fileInputStream, "123456".toCharArray())
         val keyManager = KeyManagerUtils.createKeyManager(keyStore, "123456".toCharArray())
         sslService.updateSslMaterials(keyManager)
