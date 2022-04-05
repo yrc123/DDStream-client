@@ -42,6 +42,7 @@ dependencies {
     runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.11.2")
     //hash
     implementation("commons-codec:commons-codec:1.15")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.1")
     //h2驱动
     runtimeOnly("com.h2database:h2")
 
