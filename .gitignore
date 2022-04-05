@@ -179,6 +179,7 @@ hs_err_pid*
 #h2
 *.db
 
+/video
 *.mp4
 *.m3u8
 *.ts

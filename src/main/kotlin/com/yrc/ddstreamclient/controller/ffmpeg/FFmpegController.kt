@@ -50,9 +50,10 @@ class FFmpegController {
         return ResponseUtils
             .successResponse(ffmpegService.getFFmpegByIds(listOf( id)).first())
     }
-    @GetMapping("/ffmpeg/{name}")
-    fun getFFmpegByName(@PathVariable("name") name: String): ResponseDto<List<FFmpegProcessDto>> {
+
+    @GetMapping("/ffmpeg/process/{name}")
+    fun getProcessByName(@PathVariable("name") name: String): ResponseDto<FFmpegProcessDto> {
         return ResponseUtils
-            .successResponse(ffmpegService.getFFmpegByNames(listOf(name)))
+            .successResponse(ffmpegService.getProcessByName(name))
     }
 }
