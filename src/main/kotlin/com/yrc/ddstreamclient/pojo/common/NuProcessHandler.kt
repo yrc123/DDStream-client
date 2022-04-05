@@ -1,39 +1,34 @@
 package com.yrc.ddstreamclient.pojo.common
 
-import kotlinx.coroutines.yield
-import java.io.InputStream
+import com.zaxxer.nuprocess.NuAbstractProcessHandler
 import java.nio.ByteBuffer
-import java.nio.channels.Channels
-import java.nio.channels.Selector
 import java.nio.charset.StandardCharsets
 import java.util.logging.FileHandler
 import java.util.logging.Logger
 
-class NioLog(
+class NuProcessHandler(
     private val processName: String,
-    private val inputStream: InputStream,
     private val fileHandler: FileHandler,
-) {
+) : NuAbstractProcessHandler(){
+
     val logger = Logger.getLogger(processName).apply {
         useParentHandlers = false
         addHandler(fileHandler)
     }
-    val channel = Channels.newChannel(inputStream)
-    suspend fun start() {
-        val open = Selector.open()
-        val byteBuffer = ByteBuffer.allocate(1024)
-        val charSet = StandardCharsets.UTF_8
-        val stringBuffer = StringBuffer()
-        while (true) {
-            val len = channel.read(byteBuffer)
-            byteBuffer.flip()
-            if (len == 0) {
-                yield()
-                continue
-            } else if (len == -1) {
-                break
-            }
-            val charBuffer = charSet.decode(byteBuffer).asReadOnlyBuffer()
+    val charSet = StandardCharsets.UTF_8
+    val stdoutStringBuffer = StringBuffer()
+    val stderrStringBuffer = StringBuffer()
+
+    override fun onStdout(buffer: ByteBuffer, closed: Boolean) {
+        commonStd(buffer, closed, stdoutStringBuffer)
+    }
+
+    override fun onStderr(buffer: ByteBuffer, closed: Boolean) {
+        commonStd(buffer, closed, stderrStringBuffer)
+    }
+    private fun commonStd(buffer: ByteBuffer, closed: Boolean, stringBuffer: StringBuffer) {
+        if (!closed) {
+            val charBuffer = charSet.decode(buffer).asReadOnlyBuffer()
             while (charBuffer.hasRemaining()) {
                 val ch = charBuffer.get()
                 if (ch == '\r' || ch == '\n' || ch == (-1).toChar()) {

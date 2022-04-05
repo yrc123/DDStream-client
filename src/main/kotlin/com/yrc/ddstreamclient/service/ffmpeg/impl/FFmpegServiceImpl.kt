@@ -71,7 +71,7 @@ class FFmpegServiceImpl(
 
     override fun stopFFmpegs(names: List<String>) {
         names.forEach {
-            processMap[it]?.process?.destroy()
+            processMap[it]?.process?.destroy(true)
             synchronized(outputUriMap) {
                 processMap[it]?.config
                     ?.ffmpegOutputList
@@ -139,7 +139,7 @@ class FFmpegServiceImpl(
     }
 
     private fun getAliveStatus(ffmpegProcessDto: FFmpegProcessDto?): Boolean {
-        val alive = ffmpegProcessDto?.process?.isAlive ?: false
+        val alive = ffmpegProcessDto?.process?.isRunning ?: false
         //判断程序是否是alive状态
         return if (alive) {
             //判断在本地推流的视频文件是否已经生成
