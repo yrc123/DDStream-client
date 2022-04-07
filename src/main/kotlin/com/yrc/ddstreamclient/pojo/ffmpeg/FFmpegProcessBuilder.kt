@@ -22,7 +22,6 @@ class FFmpegProcessBuilder(
             formatter = ProcessFormatter()
         }
         val processHandler = NuProcessHandler(processName, fileHandler)
-        //TODO("后续要将日志打印到文件，然后提供接口读取")
         val process = NuProcessBuilder(config).let {
             it.setProcessListener(processHandler)
             it.start()

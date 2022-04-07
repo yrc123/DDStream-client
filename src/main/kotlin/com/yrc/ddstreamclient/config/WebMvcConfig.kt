@@ -13,6 +13,7 @@ class WebMvcConfig : WebMvcConfigurer {
     lateinit var jwtService: JwtService
     override fun addInterceptors(registry: InterceptorRegistry) {
         registry.addInterceptor(JwtInterceptor(jwtService))
+            .excludePathPatterns("/video/**")
     }
 
 }

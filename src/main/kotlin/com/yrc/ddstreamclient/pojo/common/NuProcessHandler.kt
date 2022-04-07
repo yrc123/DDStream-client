@@ -26,6 +26,13 @@ class NuProcessHandler(
     override fun onStderr(buffer: ByteBuffer, closed: Boolean) {
         commonStd(buffer, closed, stderrStringBuffer)
     }
+
+    override fun onExit(statusCode: Int) {
+        logger.handlers.forEach {
+            it.close()
+        }
+    }
+
     private fun commonStd(buffer: ByteBuffer, closed: Boolean, stringBuffer: StringBuffer) {
         if (!closed) {
             val charBuffer = charSet.decode(buffer).asReadOnlyBuffer()
