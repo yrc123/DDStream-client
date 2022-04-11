@@ -12,8 +12,6 @@ import org.springframework.boot.web.embedded.jetty.JettyServletWebServerFactory
 import org.springframework.boot.web.servlet.server.ConfigurableServletWebServerFactory
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import java.io.FileInputStream
-import java.io.InputStream
 import javax.net.ssl.SSLSessionContext
 import javax.net.ssl.X509ExtendedKeyManager
 import javax.net.ssl.X509ExtendedTrustManager
@@ -40,15 +38,10 @@ class SslConfig {
     fun sslFactory(): SSLFactory {
         return SSLFactory.builder()
             .withSwappableIdentityMaterial()
-            .withIdentityMaterial(readStoreFromRemote(), "123456".toCharArray())
+            .withIdentityMaterial(KeyStoreFactory.getKeyStore(), "".toCharArray())
             .withSwappableTrustMaterial()
             .withUnsafeTrustMaterial()
             .build()
-    }
-
-    private fun readStoreFromRemote(): InputStream {
-//        TODO("从远端获取证书")
-        return FileInputStream("video/key.keystore")
     }
 
     @Bean
