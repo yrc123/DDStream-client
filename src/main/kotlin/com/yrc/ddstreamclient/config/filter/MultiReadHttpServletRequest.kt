@@ -26,6 +26,7 @@ class MultiReadHttpServletRequest(request: HttpServletRequest) : HttpServletRequ
     /* An inputstream which reads the cached request body */
     inner class CachedServletInputStream(private val byteArray: ByteArray) : ServletInputStream() {
         val input = ByteArrayInputStream(byteArray)
+        private var _readListener: ReadListener? = null
 
         override fun read(): Int {
             return input.read()
@@ -40,7 +41,10 @@ class MultiReadHttpServletRequest(request: HttpServletRequest) : HttpServletRequ
         }
 
         override fun setReadListener(readListener: ReadListener?) {
-            TODO("Not yet implemented")
+            this._readListener = readListener
+            if (readListener == null) {
+                throw NullPointerException()
+            }
         }
 
     }
