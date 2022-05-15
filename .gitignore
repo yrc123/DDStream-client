@@ -156,6 +156,7 @@ gradle-app.setting
 
 # Log file
 *.log
+/log
 
 # BlueJ files
 *.ctxt
@@ -177,3 +178,9 @@ hs_err_pid*
 
 #h2
 *.db
+
+/video
+*.mp4
+*.m3u8
+*.ts
+*.keystore

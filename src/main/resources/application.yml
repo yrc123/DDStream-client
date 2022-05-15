@@ -1,6 +1,10 @@
 #服务器端口
 server:
-  port: 7000
+  port: 7001
+ssl:
+  client-auth: true
+  keystore-path: identity.jks
+  keystore-password: secret
 
 spring:
   application:
@@ -12,7 +16,15 @@ spring:
       #      host: 106.15.74.153
 #      host: localhost
       discovery:
-          auto-ip-address: true
+        scheme: https
+        fail-fast: false
+        hostname: 127.0.0.1
+  web:
+    resources:
+      static-locations: file:./video
+  mvc:
+    static-path-pattern: /video/**
+
   #h2数据库
   datasource:
     driver-class-name: org.h2.Driver
@@ -22,16 +34,23 @@ spring:
     console:
       enabled: true
       path: /h2
-  sql:
-    init:
-      #mode: always
-      #data-locations:
 #健康检查指标
 management:
   endpoints:
     web:
       exposure:
-        include: metrics,health
-    endpoint:
-      health:
-        show-details: always
+        include: metrics,health,logfile
+  endpoint:
+    health:
+      show-details: always
+logging:
+  file:
+    path: log
+
+#自定义
+dd-stream:
+  jwt-public-key: ${DDSTREAM_PUBLIC_KEY}
+  cloud:
+    consul:
+      discovery:
+  #        auto-ip-address: true
