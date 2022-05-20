@@ -72,6 +72,13 @@ class FFmpegServiceImpl(
     override fun stopFFmpegs(names: List<String>) {
         names.forEach {
             processMap[it]?.process?.destroy(true)
+            processMap[it]?.config?.ffmpegOutputList?.filter {
+                it.ffmpegOutput
+                    ?.outputUri
+                    ?.startsWith("video/") ?: false
+            }?.forEach{
+                File(it.ffmpegOutput!!.outputUri!!).delete()
+            }
             synchronized(outputUriMap) {
                 processMap[it]?.config
                     ?.ffmpegOutputList
